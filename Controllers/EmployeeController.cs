@@ -53,9 +53,21 @@ namespace CompanyMng.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Employees.Add(employee);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                int maxEmpNumber = db.Departments.Where(x => x.DepartmentID == employee.DepartmentID).SingleOrDefault().MaxEmployess;
+                int employessInDept = db.Employees.Where(x => x.DepartmentID == employee.DepartmentID).ToList().Count;
+
+                //confirmation of numner of employess
+                if (maxEmpNumber == employessInDept)
+                {
+                    TempData["Msg"] = "You have already insert the max number of employees in this departmnet";
+                    return RedirectToAction("Create");
+                }
+                else
+                {
+                    db.Employees.Add(employee);
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }               
             }
 
             ViewBag.DepartmentID = new SelectList(db.Departments, "DepartmentID", "DepartmentName", employee.DepartmentID);
@@ -88,8 +100,23 @@ namespace CompanyMng.Controllers
             if (ModelState.IsValid)
             {
                 db.Entry(employee).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+
+                int maxEmpNumber = db.Departments.Where(x => x.DepartmentID == employee.DepartmentID).SingleOrDefault().MaxEmployess;
+                int employessInDept = db.Employees.Where(x => x.DepartmentID == employee.DepartmentID).ToList().Count;
+
+                //confirmation of number of employess if an employess is changing department
+                if (maxEmpNumber == employessInDept)
+                {
+                    TempData["Msg"] = "You have already insert the max number of employees in this department";
+                    return RedirectToAction("Create");
+                }
+
+                else
+                {
+
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
             }
             ViewBag.DepartmentID = new SelectList(db.Departments, "DepartmentID", "DepartmentName", employee.DepartmentID);
             return View(employee);

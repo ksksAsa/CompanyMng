@@ -4,6 +4,12 @@
     ViewBag.Title = "Delete";
 }
 
+@if (TempData["Msg"] != null)
+{
+    <h3>
+        @TempData["Msg"].ToString()
+    </h3>
+}
 
 <h2>Delete</h2>
 

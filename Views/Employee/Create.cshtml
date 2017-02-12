@@ -4,6 +4,13 @@
     ViewBag.Title = "Create";
 }
 
+@if (TempData["Msg"] != null)
+{
+    <h3>
+        @TempData["Msg"].ToString()
+    </h3>
+}
+
 <h2>Create</h2>
 
 

@@ -84,8 +84,18 @@ namespace CompanyMng.Controllers
             if (ModelState.IsValid)
             {
                 db.Entry(department).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+
+                var empNumber = db.Employees.Where(x => x.DepartmentID == department.DepartmentID).ToList().Count;
+                if (department.MaxEmployess < empNumber)
+                {
+                    TempData["Msg"] = "Max employess number must me equals or greater of the current employess in this department";
+                    return RedirectToAction("Edit");
+                }
+                else
+                {
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
             }
             return View(department);
         }
@@ -93,6 +103,7 @@ namespace CompanyMng.Controllers
         // GET: Department/Delete/5
         public ActionResult Delete(int? id)
         {
+
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -113,10 +124,20 @@ namespace CompanyMng.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Department department = db.Departments.Find(id);
-            db.Departments.Remove(department);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            //check if can delete department
+            var empNumper = db.Employees.Where(x => x.DepartmentID == id).ToList().Count;
+            if (empNumper != 0)
+            {
+                TempData["Msg"] = "You can not delete department with employees";
+                return RedirectToAction("Delete");
+            }
+            else
+            {
+                Department department = db.Departments.Find(id);
+                db.Departments.Remove(department);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
         }
 
         protected override void Dispose(bool disposing)

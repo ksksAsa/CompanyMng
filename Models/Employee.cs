@@ -21,6 +21,8 @@ namespace CompanyMng.Models
 
         [Required]
         [StringLength(150)]
+        [EmailAddress]
+        
         public string Email { get; set; }
 
         [Column(TypeName = "date")]

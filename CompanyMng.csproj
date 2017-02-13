@@ -162,7 +162,7 @@
     <Compile Include="Controllers\DepartmentController.cs" />
     <Compile Include="Controllers\EmployeeController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\TestController.cs" />
+    <Compile Include="Controllers\EmployeeModalController.cs" />
     <Compile Include="Models\Department.cs" />
     <Compile Include="Models\Employee.cs" />
     <Compile Include="Global.asax.cs">
@@ -222,10 +222,10 @@
     <Content Include="Views\Employee\Details.cshtml" />
     <Content Include="Views\Employee\Edit.cshtml" />
     <Content Include="Views\Employee\Index.cshtml" />
-    <Content Include="Views\Test\Index.cshtml" />
-    <Content Include="Views\Test\Partial2.cshtml" />
-    <Content Include="Views\Test\Partial3.cshtml" />
-    <Content Include="Views\Test\_Show.cshtml" />
+    <Content Include="Views\EmployeeModal\Index.cshtml" />
+    <Content Include="Views\EmployeeModal\Partial2.cshtml" />
+    <Content Include="Views\EmployeeModal\Partial3.cshtml" />
+    <Content Include="Views\EmployeeModal\_Show.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

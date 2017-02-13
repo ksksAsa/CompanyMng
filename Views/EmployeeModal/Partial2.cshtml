@@ -32,12 +32,12 @@
             $.ajax({
 
                 type: "POST",
-                url: "/Test/Index",
+                url: "/EmployeeModal/Index",
                 data: myformdata,
                 success: function () {
                     $("#loaderDiv").hide();
                     $("#myModal").modal("hide");
-                    window.location.href = "/Test/Index";
+                    window.location.href = "/EmployeeModal/Index";
 
                 }
 

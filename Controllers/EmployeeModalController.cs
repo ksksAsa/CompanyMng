@@ -8,7 +8,7 @@ using System.Data.Entity;
 
 namespace CompanyMng.Controllers
 {
-    public class TestController : Controller
+    public class EmployeeModalController : Controller
     {
         // GET: Test
         public ActionResult Index()

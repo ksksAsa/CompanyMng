@@ -112,7 +112,7 @@
 <script>
     function AddEditEmployee(employeeId)
     {
-        var url = "/Test/AddEditEmployee?EmployeeID=" + employeeId;
+        var url = "/EmployeeModal/AddEditEmployee?EmployeeID=" + employeeId;
         $("#myModalBodyDiv1").load(url, function () {
             $("#myModal1").modal("show");
         })
@@ -134,7 +134,7 @@
         $.ajax({
 
             type: "POST",
-            url: "/Test/DeleteEmployee",
+            url: "/EmployeeModal/DeleteEmployee",
             data: { EmployeeId: empId },
             success: function (result) {
                 $("#loaderDiv").hide();
@@ -149,7 +149,7 @@
 
      function ShowEmployee(employeeId) {
 
-        var url = "/Test/ShowEmployee?EmployeeID=" + employeeId;
+        var url = "/EmployeeModal/ShowEmployee?EmployeeID=" + employeeId;
         
         $("#myModalBodyDiv").load(url, function () {
             $("#myModal2").modal("show");

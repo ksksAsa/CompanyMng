@@ -34,14 +34,16 @@ namespace CompanyMng.Controllers
             {
                 return HttpNotFound();
             }
-            return View(employee);
+            // return View(employee);
+            return PartialView("Details",employee);
         }
 
         // GET: Employee/Create
         public ActionResult Create()
         {
             ViewBag.DepartmentID = new SelectList(db.Departments, "DepartmentID", "DepartmentName");
-            return View();
+            return PartialView("Create");
+           // return View();
         }
 
         // POST: Employee/Create
@@ -87,7 +89,8 @@ namespace CompanyMng.Controllers
                 return HttpNotFound();
             }
             ViewBag.DepartmentID = new SelectList(db.Departments, "DepartmentID", "DepartmentName", employee.DepartmentID);
-            return View(employee);
+             //return View(employee);
+            return PartialView("Edit", employee);
         }
 
         // POST: Employee/Edit/5
@@ -108,18 +111,22 @@ namespace CompanyMng.Controllers
                 if (maxEmpNumber == employessInDept)
                 {
                     TempData["Msg"] = "You have already insert the max number of employees in this department";
-                    return RedirectToAction("Create");
+                    return RedirectToAction("Edit");
                 }
 
                 else
                 {
-
+                    //TempData["Msg"] = "success";
                     db.SaveChanges();
-                    return RedirectToAction("Index");
+                     return RedirectToAction("Index");
+                   // return PartialView("Details", employee);
                 }
             }
             ViewBag.DepartmentID = new SelectList(db.Departments, "DepartmentID", "DepartmentName", employee.DepartmentID);
-            return View(employee);
+           
+                return PartialView("Edit", employee);
+                    
+           // return View(employee);
         }
 
         // GET: Employee/Delete/5

@@ -54,7 +54,7 @@
                     @Html.DisplayFor(modelItem => item.Email)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.BirthDate)
+                    @Html.DisplayFor(modelItem => item.BirthDate, "{0:dd/MM/yyyy}")
                 </td>
                 <td>
                   <a href="@Url.Action("Edit","Employee", new {id=item.EmployeeID})" class="btn btn-success" data-toggle="modal", data-target="#" data-modal="edit">
@@ -67,7 +67,7 @@
                     </a>
                 </td>
                 <td>
-                   <a href="@Url.Action("Delete","Employee",new { id=item.EmployeeID})" class="btn btn-danger">
+                   <a href="@Url.Action("Delete","Employee",new { id=item.EmployeeID})" class="btn btn-danger" data-toggle="modal", data-target="#" data-modal="delete">
                        <span class="glyphicon glyphicon-trash"/>
                    </a>
                 </td>
@@ -128,6 +128,22 @@
         </div>
     </div>
 
+    <div id='deleteModal' class='modal fade'>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="#" class="close" data-dismiss="modal">&times;</a>
+                    <h3 class="modal-title">EditEmployee</h3>
+                </div>
+                <div id='myModalDeleteContent'></div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
 
     </div>
 <script>
@@ -181,6 +197,26 @@
 
 
                 $('#createModal').modal({
+
+                    keyboard: true
+                }, 'show');
+
+            });
+
+            return false;
+        });
+    });
+
+    $(function () {
+
+        $.ajaxSetup({ cache: false });
+
+        $("a[data-modal=delete]").on("click", function (e) {
+
+            $('#myModalDeleteContent').load(this.href, function () {
+
+
+                $('#deleteModal').modal({
 
                     keyboard: true
                 }, 'show');

@@ -141,7 +141,8 @@ namespace CompanyMng.Controllers
             {
                 return HttpNotFound();
             }
-            return View(employee);
+            return PartialView("Delete", employee);
+          //  return View(employee);
         }
 
         // POST: Employee/Delete/5

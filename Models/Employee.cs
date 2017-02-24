@@ -26,6 +26,7 @@ namespace CompanyMng.Models
         public string Email { get; set; }
 
         [Column(TypeName = "date")]
+        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}")]
         public DateTime BirthDate { get; set; }
 
         public int DepartmentID { get; set; }

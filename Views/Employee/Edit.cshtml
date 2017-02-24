@@ -11,10 +11,17 @@
     </h3>
 }
 
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
 <h2>Edit</h2>
 
 
-@using (Html.BeginForm())
+@using (Html.BeginForm(new { id="myForm"}))
 {
     @Html.AntiForgeryToken()
     
@@ -65,9 +72,11 @@
         </div>
 
         <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
-            </div>
+            <div class="col-md-offset-2 col-md-6">
+</div>
+        </div>
+        <div style="text-align:center;display:none" id="loaderDiv">
+            <img src="~/Content/loading.png" width="150" />
         </div>
     </div>
 }
@@ -75,6 +84,31 @@
 <div>
     @Html.ActionLink("Back to List", "Index")
 </div>
+
+<script>
+        
+        $("#btnSubmit").click(function () {
+            alert('save');
+            $("#loaderDiv").show();
+           
+            var myformdata = $("#myForm").serialize();
+
+            $.ajax({
+
+                type: "POST",
+                url: "/Employee/Index",
+                data: myformdata,
+                success: function () {
+                    $("#loaderDiv").hide();
+                    $("#editModal").modal("hide");
+                    window.location.href = "/Employee/Index";
+
+                }
+                
+            })
+        })
+
+</script>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

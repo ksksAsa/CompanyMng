@@ -8,28 +8,40 @@ using System.Web;
 using System.Web.Mvc;
 using CompanyMng;
 using CompanyMng.Models;
+using CompanyMng.Repositories;
 
 namespace CompanyMng.Controllers
 {
     public class EmployeeController : Controller
     {
-        private CompanyModel db = new CompanyModel();
+       // private CompanyModel db = new CompanyModel();
+
+        private IRepository<Employee, int> _repository;
+        private IRepository<Department, int> _repoDep;
+
+        public EmployeeController(IRepository<Employee, int> repo, IRepository<Department,int> repo2)
+        {
+            _repository = repo;
+            _repoDep = repo2;
+        }
 
         // GET: Employee
         public ActionResult Index()
         {
-            var employees = db.Employees.Include(e => e.Department);
+            // var employees = db.Employees.Include(e => e.Department);
+            var employees = _repository.Get();
             return View(employees.ToList());
         }
 
         // GET: Employee/Details/5
-        public ActionResult Details(int? id)
+        public ActionResult Details(int id)
         {
-            if (id == null)
+            if (id == 0)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Employee employee = db.Employees.Find(id);
+            // Employee employee = db.Employees.Find(id);
+            Employee employee = _repository.Get(id);
             if (employee == null)
             {
                 return HttpNotFound();
@@ -41,7 +53,7 @@ namespace CompanyMng.Controllers
         // GET: Employee/Create
         public ActionResult Create()
         {
-            ViewBag.DepartmentID = new SelectList(db.Departments, "DepartmentID", "DepartmentName");
+            ViewBag.DepartmentID = new SelectList(_repoDep.Get(), "DepartmentID", "DepartmentName");
             return PartialView("Create");
            // return View();
         }
@@ -55,8 +67,8 @@ namespace CompanyMng.Controllers
         {
             if (ModelState.IsValid)
             {
-                int maxEmpNumber = db.Departments.Where(x => x.DepartmentID == employee.DepartmentID).SingleOrDefault().MaxEmployess;
-                int employessInDept = db.Employees.Where(x => x.DepartmentID == employee.DepartmentID).ToList().Count;
+                int maxEmpNumber = _repoDep.Get().Where(x => x.DepartmentID == employee.DepartmentID).SingleOrDefault().MaxEmployess;
+                int employessInDept = _repository.Get().Where(x => x.DepartmentID == employee.DepartmentID).ToList().Count;
 
                 //confirmation of numner of employess
                 if (maxEmpNumber == employessInDept)
@@ -66,29 +78,29 @@ namespace CompanyMng.Controllers
                 }
                 else
                 {
-                    db.Employees.Add(employee);
-                    db.SaveChanges();
+                    _repository.Add(employee);
+                    //db.SaveChanges();
                     return RedirectToAction("Index");
                 }               
             }
 
-            ViewBag.DepartmentID = new SelectList(db.Departments, "DepartmentID", "DepartmentName", employee.DepartmentID);
+            ViewBag.DepartmentID = new SelectList(_repoDep.Get(), "DepartmentID", "DepartmentName", employee.DepartmentID);
             return View(employee);
         }
 
         // GET: Employee/Edit/5
-        public ActionResult Edit(int? id)
+        public ActionResult Edit(int id)
         {
-            if (id == null)
+            if (id == 0)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Employee employee = db.Employees.Find(id);
+            Employee employee = _repository.Get(id);
             if (employee == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.DepartmentID = new SelectList(db.Departments, "DepartmentID", "DepartmentName", employee.DepartmentID);
+            ViewBag.DepartmentID = new SelectList(_repoDep.Get(), "DepartmentID", "DepartmentName", employee.DepartmentID);
              //return View(employee);
             return PartialView("Edit", employee);
         }
@@ -102,10 +114,10 @@ namespace CompanyMng.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(employee).State = EntityState.Modified;
+               // db.Entry(employee).State = EntityState.Modified;
 
-                int maxEmpNumber = db.Departments.Where(x => x.DepartmentID == employee.DepartmentID).SingleOrDefault().MaxEmployess;
-                int employessInDept = db.Employees.Where(x => x.DepartmentID == employee.DepartmentID).ToList().Count;
+                int maxEmpNumber = _repoDep.Get().Where(x => x.DepartmentID == employee.DepartmentID).SingleOrDefault().MaxEmployess;
+                int employessInDept = _repository.Get().Where(x => x.DepartmentID == employee.DepartmentID).ToList().Count;
 
                 //confirmation of number of employess if an employess is changing department
                 if (maxEmpNumber == employessInDept)
@@ -117,12 +129,13 @@ namespace CompanyMng.Controllers
                 else
                 {
                     //TempData["Msg"] = "success";
-                    db.SaveChanges();
+                    //  db.SaveChanges();
+                    _repository.Update(employee);
                      return RedirectToAction("Index");
                    // return PartialView("Details", employee);
                 }
             }
-            ViewBag.DepartmentID = new SelectList(db.Departments, "DepartmentID", "DepartmentName", employee.DepartmentID);
+            ViewBag.DepartmentID = new SelectList(_repoDep.Get(), "DepartmentID", "DepartmentName", employee.DepartmentID);
            
                 return PartialView("Edit", employee);
                     
@@ -130,13 +143,13 @@ namespace CompanyMng.Controllers
         }
 
         // GET: Employee/Delete/5
-        public ActionResult Delete(int? id)
+        public ActionResult Delete(int id)
         {
-            if (id == null)
+            if (id == 0)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Employee employee = db.Employees.Find(id);
+            Employee employee = _repository.Get(id);
             if (employee == null)
             {
                 return HttpNotFound();
@@ -150,9 +163,9 @@ namespace CompanyMng.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Employee employee = db.Employees.Find(id);
-            db.Employees.Remove(employee);
-            db.SaveChanges();
+            Employee employee = _repository.Get(id);
+            _repository.Remove(employee);
+           // db.SaveChanges();
             return RedirectToAction("Index");
         }
 
@@ -160,7 +173,7 @@ namespace CompanyMng.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                //db.Dispose();
             }
             base.Dispose(disposing);
         }

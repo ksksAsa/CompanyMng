@@ -8,27 +8,39 @@ using System.Web;
 using System.Web.Mvc;
 using CompanyMng;
 using CompanyMng.Models;
+using CompanyMng.Repositories;
 
 namespace CompanyMng.Controllers
 {
     public class DepartmentController : Controller
     {
-        private CompanyModel db = new CompanyModel();
+        //  private CompanyModel db = new CompanyModel();
+
+        private IRepository<Department, int> _repoDep;
+        private IRepository<Employee, int> _repository;
+
+        public DepartmentController(IRepository<Department,int> _repo, IRepository<Employee, int> _reposi)
+        {
+            _repoDep = _repo;
+            _repository = _reposi;
+        }
 
         // GET: Department
         public ActionResult Index()
         {
-            return View(db.Departments.ToList());
+            return View(_repoDep.Get());
+           // return View(db.Departments.ToList());
         }
 
         // GET: Department/Details/5
-        public ActionResult Details(int? id)
+        public ActionResult Details(int id)
         {
-            if (id == null)
+            if (id == 0)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Department department = db.Departments.Find(id);
+            // Department department = db.Departments.Find(id);
+            Department department = _repoDep.Get(id);
             if (department == null)
             {
                 return HttpNotFound();
@@ -51,8 +63,9 @@ namespace CompanyMng.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Departments.Add(department);
-                db.SaveChanges();
+                _repoDep.Add(department);
+               // db.Departments.Add(department);
+                //db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
@@ -60,13 +73,14 @@ namespace CompanyMng.Controllers
         }
 
         // GET: Department/Edit/5
-        public ActionResult Edit(int? id)
+        public ActionResult Edit(int id)
         {
-            if (id == null)
+            if (id == 0)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Department department = db.Departments.Find(id);
+            //  Department department = db.Departments.Find(id);
+            Department department = _repoDep.Get(id);
             if (department == null)
             {
                 return HttpNotFound();
@@ -83,9 +97,9 @@ namespace CompanyMng.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(department).State = EntityState.Modified;
+              //  db.Entry(department).State = EntityState.Modified;
 
-                var empNumber = db.Employees.Where(x => x.DepartmentID == department.DepartmentID).ToList().Count;
+                var empNumber = _repository.Get().Where(x => x.DepartmentID == department.DepartmentID).ToList().Count;
                 if (department.MaxEmployess < empNumber)
                 {
                     TempData["Msg"] = "Max employess number must me equals or greater of the current employess in this department";
@@ -93,7 +107,8 @@ namespace CompanyMng.Controllers
                 }
                 else
                 {
-                    db.SaveChanges();
+                    //  db.SaveChanges();
+                    _repoDep.Update(department);
                     return RedirectToAction("Index");
                 }
             }
@@ -101,14 +116,15 @@ namespace CompanyMng.Controllers
         }
 
         // GET: Department/Delete/5
-        public ActionResult Delete(int? id)
+        public ActionResult Delete(int id)
         {
 
-            if (id == null)
+            if (id == 0)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Department department = db.Departments.Find(id);
+            // Department department = db.Departments.Find(id);
+            Department department = _repoDep.Get(id);
             if (department == null)
             {
                 return HttpNotFound();
@@ -125,7 +141,7 @@ namespace CompanyMng.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             //check if can delete department
-            var empNumper = db.Employees.Where(x => x.DepartmentID == id).ToList().Count;
+            var empNumper = _repository.Get().Where(x => x.DepartmentID == id).ToList().Count;
             if (empNumper != 0)
             {
                 TempData["Msg"] = "You can not delete department with employees";
@@ -133,9 +149,11 @@ namespace CompanyMng.Controllers
             }
             else
             {
-                Department department = db.Departments.Find(id);
-                db.Departments.Remove(department);
-                db.SaveChanges();
+                //Department department = db.Departments.Find(id);
+                Department department = _repoDep.Get(id);
+                _repoDep.Remove(department);
+                //db.Departments.Remove(department);
+                //db.SaveChanges();
                 return RedirectToAction("Index");
             }
         }
@@ -144,7 +162,7 @@ namespace CompanyMng.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+              //  db.Dispose();
             }
             base.Dispose(disposing);
         }
